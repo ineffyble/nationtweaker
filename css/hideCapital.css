@@ -1,0 +1,3 @@
+.pc-balance, #email_pc_in_cents_input, li[id$="signup_call_pc_in_cents_input"], a[href$="capitals"] {
+	display: none;
+}

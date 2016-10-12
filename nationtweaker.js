@@ -157,10 +157,11 @@ var sortTags = function() {
 };
 
 var hideCapital = function() {
-	var capital_elements = document.querySelectorAll('.pc-balance, #email_pc_in_cents_input, li[id$="signup_call_pc_in_cents_input"], a[href$="capitals"]');
-	Array.from(capital_elements).forEach(function(el) {
-		el.style.display = "none";
-	});
+	var link = document.createElement("link");
+	link.href = chrome.extension.getURL("css/hideCapital.css");
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	document.body.appendChild(link);
 };
 
 var allowRemovePointPersonFromVolunteers = function() {
@@ -202,4 +203,3 @@ var stopNewPagesAddedToNavByDefault = function() {
 };
 
 init();
-v

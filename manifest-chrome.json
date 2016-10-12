@@ -27,6 +27,9 @@
     "page": "nationtweaker_settings.html"
   },
 
-  "web_accessible_resources": ["nationtweaker_settings.html"]
+  "web_accessible_resources": [
+    "nationtweaker_settings.html",
+    "css/*.css"
+  ]
 
 }
