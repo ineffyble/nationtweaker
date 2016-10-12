@@ -50,7 +50,7 @@ var tweaks = [
 	},
 	{
 		"name": "Make path names on person view clickable",
-		"description": "Makes it so you can click on a path name in person view to view all people on the path <br><i>Not working in Firefox</i>",
+		"description": "Makes it so you can click on a path name in person view to view all people on the path",
 		"suggestLink": "http://nationbuilder.com/brianpalmer/link_to_path_view_of_a_path_from_single_profile_view",
 		"function": "makePathsOnPersonViewClickable",
 		"matches": [paths.signup]
@@ -192,7 +192,7 @@ var makePathsOnPersonViewClickable = function() {
 			});
 		}
 	};
-	request.open("GET", "/admin/paths/paths_with_steps", true);
+	request.open("GET", window.location.origin + "/admin/paths/paths_with_steps", true);
 	request.send();
 };
 
@@ -202,3 +202,4 @@ var stopNewPagesAddedToNavByDefault = function() {
 };
 
 init();
+v
