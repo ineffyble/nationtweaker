@@ -6,7 +6,7 @@ var paths = {
 	"pageNew": "sites/.*/pages/new",
 	"pageTemplate": "sites/.*/pages/.*/template",
 	"theme": "sites/.*/themes/.*",
-	"emailPreview": "broadcasters/.*/mailings/.*/preview",
+	"mailingPreview": "broadcasters/.*/mailings/.*/preview",
 	"mailingTheme": "broadcasters/.*/mailings/.*/themes/.*/attachments/.*"
 };
 
@@ -70,7 +70,7 @@ var tweaks = [
 		"name": "Increase size of email preview windows",
 		"description": "Make email previews full width and 600px high",
 		"function": "enlargeEmailPreviewWindows",
-		"matches": [paths.emailPreview]
+		"matches": [paths.mailingPreview]
 	},
 	{
 		"name": "Increase size of content editor across NB",
