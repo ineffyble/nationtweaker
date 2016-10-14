@@ -1,5 +1,6 @@
 var paths = {
 	"signup": "signups/.*",
+	"signupList": "signups",
 	"signupEdit": "signups/.*/edit",
 	"pageDashboard": "sites/.*/pages/.*/activities",
 	"pageNew": "sites/.*/pages/new",
@@ -53,7 +54,7 @@ var tweaks = [
 		"description": "Makes it so you can click on a path name in person view to view all people on the path",
 		"suggestLink": "http://nationbuilder.com/brianpalmer/link_to_path_view_of_a_path_from_single_profile_view",
 		"function": "makePathsOnPersonViewClickable",
-		"matches": [paths.signup]
+		"matches": [paths.signup, paths.signupList]
 	},
 	{
 		"name": "Uncheck 'add to top nav' by default on new pages",
@@ -61,6 +62,13 @@ var tweaks = [
 		"suggestLink": "http://nationbuilder.com/ineffyble/include_in_top_nav_should_be_unticked_by_default_when_creating_new_pages",
 		"function": "stopNewPagesAddedToNavByDefault",
 		"matches": [paths.pageNew]
+	},
+	{
+		"name": "Stop page numbers being passed from filter/list to person, breaking activity stream",
+		"description": "Makes it so clicking on a person on the second page of filter results will allow you to see their activities without refreshing",
+		"suggestLink": "http://nationbuilder.com/brianpalmer/page_token_is_mistakenly_passed_onto_other_things_on_a_page",
+		"function": "stopIncorrectlyPassedPageNumbers",
+		"matches": [paths.signupList]
 	}
 ];
 
@@ -116,6 +124,7 @@ var runTweak = function(t) {
 		case "makePathsOnPersonViewClickable": makePathsOnPersonViewClickable(); break;
 		case "stopNewPagesAddedToNavByDefault": stopNewPagesAddedToNavByDefault(); break;
 		case "sortTags": sortTags(); break;
+		case "stopIncorrectlyPassedPageNumbers": stopIncorrectlyPassedPageNumbers(); break;
 	}
 };
 
@@ -208,6 +217,19 @@ var makePathsOnPersonViewClickable = function() {
 var stopNewPagesAddedToNavByDefault = function() {
 	var include_in_top_nav_checkbox = document.querySelector("#page_is_nav");
 	include_in_top_nav_checkbox.checked = false;
+};
+
+var stopIncorrectlyPassedPageNumbers = function() {
+	var pageNumber = /page=[0-9]&/;
+	var removePageParameter = function() {
+		var personLinks = [].slice.call(document.querySelectorAll(".signup-row a"));
+		personLinks.forEach(function(link, i) {
+			link.href = link.href.replace(pageNumber, "");
+		});
+	};
+	var results = document.getElementById("results-container");
+	var observer = new MutationObserver(removePageParameter);
+	observer.observe(results, {childList: true, subtree: true});
 };
 
 init();
