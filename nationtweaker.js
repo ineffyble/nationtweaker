@@ -69,6 +69,13 @@ var tweaks = [
 		"suggestLink": "http://nationbuilder.com/brianpalmer/page_token_is_mistakenly_passed_onto_other_things_on_a_page",
 		"function": "stopIncorrectlyPassedPageNumbers",
 		"matches": [paths.signupList]
+	},
+	{
+		"name": "Hide US and Canadian states from the filter list",
+		"description": "Remove unwanted US states from filter view",
+		"suggestLink": "http://nationbuilder.com/tws_tony/add_country_as_a_settings_option",
+		"function": "hideAmericanAndCanadianStatesFromFilter",
+		"matches": [paths.signupList]
 	}
 ];
 
@@ -125,6 +132,7 @@ var runTweak = function(t) {
 		case "stopNewPagesAddedToNavByDefault": stopNewPagesAddedToNavByDefault(); break;
 		case "sortTags": sortTags(); break;
 		case "stopIncorrectlyPassedPageNumbers": stopIncorrectlyPassedPageNumbers(); break;
+		case "hideAmericanAndCanadianStatesFromFilter": hideAmericanAndCanadianStatesFromFilter(); break;
 	}
 };
 
@@ -230,6 +238,23 @@ var stopIncorrectlyPassedPageNumbers = function() {
 	var results = document.getElementById("results-container");
 	var observer = new MutationObserver(removePageParameter);
 	observer.observe(results, {childList: true, subtree: true});
+};
+
+var hideAmericanAndCanadianStatesFromFilter = function() {
+	var unwantedStates = ["Wyoming","Alberta","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador","Northwest Territories","Nova Scotia","Nunavut","Ontario","Prince Edward Island","Quebec","Saskatchewan","Yukon","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Palau","Pennsylvania","Puerto Rico","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virgin Island","Virginia","Washington","West Virginia","Wisconsin","Alabama","Alaska","America Samoa","Arizona","Arkansas","Armed Forces Americas","Armed Forces Europe","Armed Forces Pacific","California","Colorado","Connecticut","Delaware","District of Columbia","Federated States of Micronesia","Florida","Georgia","Guam","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Marshall Islands","Maryland","Massachusetts","Michigan"];
+
+	var removeUnwantedStates = function() {
+		var results = [].slice.call(document.querySelectorAll(".select2-results li"));
+		results.forEach(function(result, i) {
+			if (unwantedStates.indexOf(result.textContent) > -1) {
+				result.parentNode.removeChild(result);
+			}
+		});
+	};
+
+	var observer = new MutationObserver(removeUnwantedStates);
+	observer.observe(document.body, {childList: true, subtree: true});
+
 };
 
 init();
