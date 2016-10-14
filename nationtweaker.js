@@ -43,6 +43,7 @@ var tweaks = [
 		"name": "Hide social capital",
 		"description": "Removes nearly all references to political capital from the admin interface",
 		"function": "hideCapital",
+		"suggestLink": "#",
 		"matches": [".*"]
 	},
 	{
@@ -69,18 +70,21 @@ var tweaks = [
 	{
 		"name": "Increase size of email preview windows",
 		"description": "Make email previews full width and 600px high",
+		"suggestLink": "#",
 		"function": "enlargeEmailPreviewWindows",
 		"matches": [paths.mailingPreview]
 	},
 	{
-		"name": "Increase size of content editor across NB",
+		"name": "Increase size of page and post content editor windows",
 		"description": "No more scrolling for ages just to be able to see your own content in the editor",
+		"suggestLink": "#",
 		"function": "enlargeContentEditor",
 		"matches": [".*"]
 	},
 	{
-		"name": "Increase size of the code editor across NB",
+		"name": "Increase size of the template/theme code editor",
 		"description": "Enlarges the template editor windows to 80% of window height by default",
+		"suggestLink": "#",
 		"function": "enlargeCodeEditor",
 		"matches": [paths.theme, paths.pageTemplate, paths.mailingTheme]
 	}
@@ -138,14 +142,16 @@ var runTweak = function(t) {
 		case "makePathsOnPersonViewClickable": makePathsOnPersonViewClickable(); break;
 		case "stopNewPagesAddedToNavByDefault": stopNewPagesAddedToNavByDefault(); break;
 		case "sortTags": sortTags(); break;
-		case "enlargeEmailPreviewWindows": enlargeEmailPreviewWindows() break;
+		case "enlargeEmailPreviewWindows": enlargeEmailPreviewWindows(); break;
+		case "enlargeContentEditor": enlargeContentEditor(); break;
+		case "enlargeCodeEditor": enlargeCodeEditor(); break;
 	}
 };
 
 /**
  * Utility function to add style block to a page
  */
-var addCssToPage = function() {
+var addCssToPage = function(css) {
 	if (typeof GM_addStyle != "undefined") {
 	GM_addStyle(css);
 	} else if (typeof PRO_addStyle != "undefined") {
