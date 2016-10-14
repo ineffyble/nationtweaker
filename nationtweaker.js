@@ -3,13 +3,14 @@ var paths = {
 	"signupEdit": "signups/.*/edit",
 	"pageDashboard": "sites/.*/pages/.*/activities",
 	"pageNew": "sites/.*/pages/new",
-	"page": "sites/.*/pages/.*"
+	"page": "sites/.*/pages/.*",
+	"emailPreview": "broadcasters/.*/mailings/.*/preview"
 };
 
 var tweaks = [
 	{
 		"name": "Enable email re-opt-in",
-		"description": "Allows you to tick 'receive emails' for people who have opted out", 
+		"description": "Allows you to tick 'receive emails' for people who have opted out",
 		"suggestLink": "http://nationbuilder.com/cramereg/overriding_the_unsubscribe",
 		"function": "enableReOptIn",
 		"matches": [paths.signupEdit],
@@ -61,6 +62,12 @@ var tweaks = [
 		"suggestLink": "http://nationbuilder.com/ineffyble/include_in_top_nav_should_be_unticked_by_default_when_creating_new_pages",
 		"function": "stopNewPagesAddedToNavByDefault",
 		"matches": [paths.pageNew]
+	},
+	{
+		"name": "Increase size of email preview windows",
+		"description": "Make email previews full width and 600px high",
+		"function": "enlargeEmailPreviewWindows",
+		"matches": [paths.emailPreview]
 	}
 ];
 
@@ -116,6 +123,7 @@ var runTweak = function(t) {
 		case "makePathsOnPersonViewClickable": makePathsOnPersonViewClickable(); break;
 		case "stopNewPagesAddedToNavByDefault": stopNewPagesAddedToNavByDefault(); break;
 		case "sortTags": sortTags(); break;
+		case "enlargeEmailPreviewWindows": enlargeEmailPreviewWindows() break;
 	}
 };
 
@@ -171,7 +179,7 @@ var allowRemovePointPersonFromVolunteers = function() {
 		  point_person_select.classList.add("select2-allowclear");
 		} else {
 		  point_person_select.className += " " + "select2-allowclear";
-		}		
+		}
 	};
 	addAllowClearToPersonSelect();
 	var volunteer_checkbox = document.querySelector("#signup_is_volunteer");
@@ -200,6 +208,12 @@ var makePathsOnPersonViewClickable = function() {
 var stopNewPagesAddedToNavByDefault = function() {
 	var include_in_top_nav_checkbox = document.querySelector("#page_is_nav");
 	include_in_top_nav_checkbox.checked = false;
+};
+
+var enlargeEmailPreviewWindows = function() {
+	document.querySelectorAll('.span-12').forEach(function(el){el.className = 'span-24'});
+  document.getElementById('html_mailing_preview').style.height = "600px";
+  document.getElementById('text_mailing_preview').style.height = "600px";
 };
 
 init();
