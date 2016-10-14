@@ -1,10 +1,13 @@
 var paths = {
 	"signup": "signups/.*",
 	"signupEdit": "signups/.*/edit",
+	"page": "sites/.*/pages/.*",
 	"pageDashboard": "sites/.*/pages/.*/activities",
 	"pageNew": "sites/.*/pages/new",
-	"page": "sites/.*/pages/.*",
-	"emailPreview": "broadcasters/.*/mailings/.*/preview"
+	"pageTemplate": "sites/.*/pages/.*/template",
+	"theme": "sites/.*/themes/.*",
+	"emailPreview": "broadcasters/.*/mailings/.*/preview",
+	"mailingTheme": "broadcasters/.*/mailings/.*/themes/.*/attachments/.*"
 };
 
 var tweaks = [
@@ -74,6 +77,12 @@ var tweaks = [
 		"description": "No more scrolling for ages just to be able to see your own content in the editor",
 		"function": "enlargeContentEditor",
 		"matches": [".*"]
+	},
+	{
+		"name": "Increase size of the code editor across NB",
+		"description": "Enlarges the template editor windows to 80% of window height by default",
+		"function": "enlargeCodeEditor",
+		"matches": [paths.theme, paths.pageTemplate, paths.mailingTheme]
 	}
 ];
 
@@ -137,24 +146,24 @@ var runTweak = function(t) {
  * Utility function to add style block to a page
  */
 var addCssToPage = function() {
-  if (typeof GM_addStyle != "undefined") {
-  GM_addStyle(css);
-  } else if (typeof PRO_addStyle != "undefined") {
-   PRO_addStyle(css);
-  } else if (typeof addStyle != "undefined") {
-    addStyle(css);
-  } else {
-    var node = document.createElement("style");
-    node.type = "text/css";
-    node.appendChild(document.createTextNode(css));
-    var heads = document.getElementsByTagName("head");
-    if (heads.length > 0) {
-      heads[0].appendChild(node);
-    } else {
-      // no head yet, stick it whereever
-      document.documentElement.appendChild(node);
-    }
-  }
+	if (typeof GM_addStyle != "undefined") {
+	GM_addStyle(css);
+	} else if (typeof PRO_addStyle != "undefined") {
+	 PRO_addStyle(css);
+	} else if (typeof addStyle != "undefined") {
+		addStyle(css);
+	} else {
+		var node = document.createElement("style");
+		node.type = "text/css";
+		node.appendChild(document.createTextNode(css));
+		var heads = document.getElementsByTagName("head");
+		if (heads.length > 0) {
+			heads[0].appendChild(node);
+		} else {
+			// no head yet, stick it whereever
+			document.documentElement.appendChild(node);
+		}
+	}
 };
 
 var addSettingsToUserMenu = function() {
@@ -206,9 +215,9 @@ var allowRemovePointPersonFromVolunteers = function() {
 	var addAllowClearToPersonSelect = function() {
 		var point_person_select = document.querySelector("#s2id_signup_parent_id");
 		if (point_person_select.classList) {
-		  point_person_select.classList.add("select2-allowclear");
+			point_person_select.classList.add("select2-allowclear");
 		} else {
-		  point_person_select.className += " " + "select2-allowclear";
+			point_person_select.className += " " + "select2-allowclear";
 		}
 	};
 	addAllowClearToPersonSelect();
@@ -242,8 +251,8 @@ var stopNewPagesAddedToNavByDefault = function() {
 
 var enlargeEmailPreviewWindows = function() {
 	document.querySelectorAll('.span-12').forEach(function(el){el.className = 'span-24'});
-  document.getElementById('html_mailing_preview').style.height = "600px";
-  document.getElementById('text_mailing_preview').style.height = "600px";
+	document.getElementById('html_mailing_preview').style.height = "600px";
+	document.getElementById('text_mailing_preview').style.height = "600px";
 };
 
 var enlargeContentEditor = function() {
@@ -251,6 +260,15 @@ var enlargeContentEditor = function() {
 		".mceIframeContainer iframe, .mce-container iframe { ",
 		"  min-height: 50vh !important; ",
 		"} "
+	].join("\n");
+	addCssToPage(css);
+};
+
+var enlargeCodeEditor = function() {
+	var css = [
+		".CodeMirror, .CodeMirror-scroll {",
+		"  height: 80vh !important;",
+		"}"
 	].join("\n");
 	addCssToPage(css);
 };
