@@ -26,7 +26,10 @@ function makeTweaksForm() {
 		}
 		html += '><br>';
 		html += '<span class="description">' + t.description + '</span><br>';
-		html += '<a class="suggest" href="' + t.suggestLink + '" target="_blank">Tell NationBuilder to properly implement this</a><br><br>';
+		if (t.suggestLink) {
+			html += '<a class="suggest" href="' + t.suggestLink + '" target="_blank">Tell NationBuilder to properly implement this</a><br>';
+		}
+		html += '<br>';
 		form.innerHTML = html + form.innerHTML;
 	});
 }
