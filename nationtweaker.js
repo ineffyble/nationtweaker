@@ -68,6 +68,12 @@ var tweaks = [
 		"description": "Make email previews full width and 600px high",
 		"function": "enlargeEmailPreviewWindows",
 		"matches": [paths.emailPreview]
+	},
+	{
+		"name": "Increase size of content editor across NB",
+		"description": "No more scrolling for ages just to be able to see your own content in the editor",
+		"function": "enlargeContentEditor",
+		"matches": [".*"]
 	}
 ];
 
@@ -125,6 +131,30 @@ var runTweak = function(t) {
 		case "sortTags": sortTags(); break;
 		case "enlargeEmailPreviewWindows": enlargeEmailPreviewWindows() break;
 	}
+};
+
+/**
+ * Utility function to add style block to a page
+ */
+var addCssToPage = function() {
+  if (typeof GM_addStyle != "undefined") {
+  GM_addStyle(css);
+  } else if (typeof PRO_addStyle != "undefined") {
+   PRO_addStyle(css);
+  } else if (typeof addStyle != "undefined") {
+    addStyle(css);
+  } else {
+    var node = document.createElement("style");
+    node.type = "text/css";
+    node.appendChild(document.createTextNode(css));
+    var heads = document.getElementsByTagName("head");
+    if (heads.length > 0) {
+      heads[0].appendChild(node);
+    } else {
+      // no head yet, stick it whereever
+      document.documentElement.appendChild(node);
+    }
+  }
 };
 
 var addSettingsToUserMenu = function() {
@@ -214,6 +244,15 @@ var enlargeEmailPreviewWindows = function() {
 	document.querySelectorAll('.span-12').forEach(function(el){el.className = 'span-24'});
   document.getElementById('html_mailing_preview').style.height = "600px";
   document.getElementById('text_mailing_preview').style.height = "600px";
+};
+
+var enlargeContentEditor = function() {
+	var css = [
+		".mceIframeContainer iframe, .mce-container iframe { ",
+		"  min-height: 50vh !important; ",
+		"} "
+	].join("\n");
+	addCssToPage(css);
 };
 
 init();
