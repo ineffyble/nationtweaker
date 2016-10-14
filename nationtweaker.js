@@ -123,7 +123,7 @@ var addSettingsToUserMenu = function() {
 	var user_menu = document.querySelector(".user-menu");
 	if (user_menu) {
 		var settings_link = chrome.extension.getURL('nationtweaker_settings.html');
-		user_menu.innerHTML = user_menu.innerHTML + '<li class="support-action"><a href="' + settings_link + '" target="_new">NationTweaker</a></li>';
+		user_menu.insertAdjacentHTML("beforeEnd", '<li class="support-action"><a href="' + settings_link + '" target="_new">NationTweaker</a></li>');
 	}
 }
 
@@ -143,7 +143,11 @@ var fixAttendeesLink = function() {
 
 var fixPageTagLinks = function() {
 	var site_id = window.location.pathname.split( "/" )[3];
-	document.querySelector(".tags").innerHTML = document.querySelector(".tags").innerHTML.replace("signups", "sites/" + site_id + "/pages");
+	var tags = [].slice.call(document.querySelectorAll(".tags a"));
+	tags.forEach(function(tag, i) {
+		var tag_id = tag.href.split("=")[1];
+		tag.href = "/admin/sites/" + site_id + "/pages/?tag_id=" + tag_id;
+	});
 };
 
 var sortTags = function() {
@@ -187,7 +191,11 @@ var makePathsOnPersonViewClickable = function() {
 			paths.forEach(function(path, i) {
 				personsPaths.forEach(function(pp) {
 					if (pp.textContent === path.name) {
-						pp.innerHTML = '<a href="/admin/signups?query=%7B%22type%22%3A%22all%22%2C%22conditions%22%3A%5B%5D%2C%22clauses%22%3A%5B%5D%2C%22id%22%3Anull%2C%22searchContext%22%3A%22path%22%2C%22errors%22%3A%5B%5D%2C%22filters%22%3A%7B%22pathId%22%3A' + path.id + '%2C%22journeyStatus%22%3A0%2C%22signupType%22%3A%5B0%2C1%5D%7D%7D">' + pp.textContent + '</a>';
+						var a = document.createElement("a");
+						a.href = "/admin/signups?query=%7B%22type%22%3A%22all%22%2C%22conditions%22%3A%5B%5D%2C%22clauses%22%3A%5B%5D%2C%22id%22%3Anull%2C%22searchContext%22%3A%22path%22%2C%22errors%22%3A%5B%5D%2C%22filters%22%3A%7B%22pathId%22%3A" + encodeURIComponent(path.id) + "%2C%22journeyStatus%22%3A0%2C%22signupType%22%3A%5B0%2C1%5D%7D%7D";
+						a.textContent = pp.textContent;
+						pp.textContent = "";
+						pp.appendChild(a);
 					}
 				});
 			});
