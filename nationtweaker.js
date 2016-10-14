@@ -1,6 +1,6 @@
 var paths = {
 	"signup": "signups/.*",
-	"signupList": "signups",
+	"signupList": "signups$",
 	"signupEdit": "signups/.*/edit",
 	"pageDashboard": "sites/.*/pages/.*/activities",
 	"pageNew": "sites/.*/pages/new",
