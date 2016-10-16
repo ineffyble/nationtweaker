@@ -152,7 +152,7 @@ var runTweak = function(t) {
 		case "enableReOptIn": enableReOptIn(); break;
 		case "fixAttendeesLink": fixAttendeesLink(); break;
 		case "fixPageTagLinks": fixPageTagLinks(); break;
-		case "hideCapital": hideCapital(); break;
+		case "hideCapital": runCssTweak("hideCapital"); break;
 		case "allowRemovePointPersonFromVolunteers": allowRemovePointPersonFromVolunteers(); break;
 		case "makePathsOnPersonViewClickable": makePathsOnPersonViewClickable(); break;
 		case "stopNewPagesAddedToNavByDefault": stopNewPagesAddedToNavByDefault(); break;
@@ -160,34 +160,18 @@ var runTweak = function(t) {
 		case "stopIncorrectlyPassedPageNumbers": stopIncorrectlyPassedPageNumbers(); break;
 		case "hideAmericanAndCanadianStatesFromFilter": hideAmericanAndCanadianStatesFromFilter(); break;
 		case "enlargeEmailPreviewWindows": enlargeEmailPreviewWindows(); break;
-		case "enlargeContentEditor": enlargeContentEditor(); break;
-		case "enlargeCodeEditor": enlargeCodeEditor(); break;
+		case "enlargeContentEditor": runCssTweak("enlargeContentEditor"); break;
+		case "enlargeCodeEditor": runCssTweak("enlargeCodeEditor"); break;
 	}
 };
 
-/**
- * Utility function to add style block to a page
- */
-var addCssToPage = function(css) {
-	if (typeof GM_addStyle != "undefined") {
-	GM_addStyle(css);
-	} else if (typeof PRO_addStyle != "undefined") {
-	 PRO_addStyle(css);
-	} else if (typeof addStyle != "undefined") {
-		addStyle(css);
-	} else {
-		var node = document.createElement("style");
-		node.type = "text/css";
-		node.appendChild(document.createTextNode(css));
-		var heads = document.getElementsByTagName("head");
-		if (heads.length > 0) {
-			heads[0].appendChild(node);
-		} else {
-			// no head yet, stick it whereever
-			document.documentElement.appendChild(node);
-		}
-	}
-};
+var runCssTweak = function(name) {
+	var link = document.createElement("link");
+	link.href = chrome.extension.getURL("css/" + name + ".css");
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	document.body.appendChild(link);	
+}
 
 var addSettingsToUserMenu = function() {
 	var user_menu = document.querySelector(".user-menu");
@@ -228,14 +212,6 @@ var sortTags = function() {
 	}).forEach(function(val, index) {
 		tag_list.appendChild(val);
 	});
-};
-
-var hideCapital = function() {
-	var link = document.createElement("link");
-	link.href = chrome.extension.getURL("css/hideCapital.css");
-	link.type = "text/css";
-	link.rel = "stylesheet";
-	document.body.appendChild(link);
 };
 
 var allowRemovePointPersonFromVolunteers = function() {
@@ -314,24 +290,6 @@ var enlargeEmailPreviewWindows = function() {
 	document.querySelectorAll('.span-12').forEach(function(el){el.className = 'span-24'});
 	document.getElementById('html_mailing_preview').style.height = "600px";
 	document.getElementById('text_mailing_preview').style.height = "600px";
-};
-
-var enlargeContentEditor = function() {
-	var css = [
-		".mceIframeContainer iframe, .mce-container iframe { ",
-		"  min-height: 50vh !important; ",
-		"} "
-	].join("\n");
-	addCssToPage(css);
-};
-
-var enlargeCodeEditor = function() {
-	var css = [
-		".CodeMirror, .CodeMirror-scroll {",
-		"  height: 80vh !important;",
-		"}"
-	].join("\n");
-	addCssToPage(css);
 };
 
 init();
