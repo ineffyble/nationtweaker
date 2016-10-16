@@ -1,0 +1,3 @@
+.mceIframeContainer iframe, .mce-container iframe {
+  min-height: 50vh !important;
+}
