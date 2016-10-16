@@ -287,7 +287,11 @@ var hideAmericanAndCanadianStatesFromFilter = function() {
 };
 
 var enlargeEmailPreviewWindows = function() {
-	document.querySelectorAll('.span-12').forEach(function(el){el.className = 'span-24'});
+	var previews = [].slice.call(document.querySelectorAll('.span-12'));
+	previews.forEach(function(el){
+		el.className = 'span-24'
+	});
+	
 	document.getElementById('html_mailing_preview').style.height = "600px";
 	document.getElementById('text_mailing_preview').style.height = "600px";
 };
