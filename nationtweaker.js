@@ -2,15 +2,19 @@ var paths = {
 	"signup": "signups/.*",
 	"signupList": "signups$",
 	"signupEdit": "signups/.*/edit",
+	"page": "sites/.*/pages/.*",
 	"pageDashboard": "sites/.*/pages/.*/activities",
 	"pageNew": "sites/.*/pages/new",
-	"page": "sites/.*/pages/.*"
+	"pageTemplate": "sites/.*/pages/.*/template",
+	"theme": "sites/.*/themes/.*",
+	"mailingPreview": "broadcasters/.*/mailings/.*/preview",
+	"mailingTheme": "broadcasters/.*/mailings/.*/themes/.*/attachments/.*"
 };
 
 var tweaks = [
 	{
 		"name": "Enable email re-opt-in",
-		"description": "Allows you to tick 'receive emails' for people who have opted out", 
+		"description": "Allows you to tick 'receive emails' for people who have opted out",
 		"suggestLink": "http://nationbuilder.com/cramereg/overriding_the_unsubscribe",
 		"function": "enableReOptIn",
 		"matches": [paths.signupEdit],
@@ -40,6 +44,7 @@ var tweaks = [
 		"name": "Hide social capital",
 		"description": "Removes nearly all references to political capital from the admin interface",
 		"function": "hideCapital",
+		"suggestLink": "#",
 		"matches": [".*"]
 	},
 	{
@@ -76,6 +81,27 @@ var tweaks = [
 		"suggestLink": "http://nationbuilder.com/tws_tony/add_country_as_a_settings_option",
 		"function": "hideAmericanAndCanadianStatesFromFilter",
 		"matches": [paths.signupList]
+        },
+        {
+		"name": "Increase size of email preview windows",
+		"description": "Make email previews full width and 600px high",
+		"suggestLink": "#",
+		"function": "enlargeEmailPreviewWindows",
+		"matches": [paths.mailingPreview]
+	},
+	{
+		"name": "Increase size of page and post content editor windows",
+		"description": "No more scrolling for ages just to be able to see your own content in the editor",
+		"suggestLink": "#",
+		"function": "enlargeContentEditor",
+		"matches": [".*"]
+	},
+	{
+		"name": "Increase size of the template/theme code editor",
+		"description": "Enlarges the template editor windows to 80% of window height by default",
+		"suggestLink": "#",
+		"function": "enlargeCodeEditor",
+		"matches": [paths.theme, paths.pageTemplate, paths.mailingTheme]
 	}
 ];
 
@@ -133,6 +159,33 @@ var runTweak = function(t) {
 		case "sortTags": sortTags(); break;
 		case "stopIncorrectlyPassedPageNumbers": stopIncorrectlyPassedPageNumbers(); break;
 		case "hideAmericanAndCanadianStatesFromFilter": hideAmericanAndCanadianStatesFromFilter(); break;
+		case "enlargeEmailPreviewWindows": enlargeEmailPreviewWindows(); break;
+		case "enlargeContentEditor": enlargeContentEditor(); break;
+		case "enlargeCodeEditor": enlargeCodeEditor(); break;
+	}
+};
+
+/**
+ * Utility function to add style block to a page
+ */
+var addCssToPage = function(css) {
+	if (typeof GM_addStyle != "undefined") {
+	GM_addStyle(css);
+	} else if (typeof PRO_addStyle != "undefined") {
+	 PRO_addStyle(css);
+	} else if (typeof addStyle != "undefined") {
+		addStyle(css);
+	} else {
+		var node = document.createElement("style");
+		node.type = "text/css";
+		node.appendChild(document.createTextNode(css));
+		var heads = document.getElementsByTagName("head");
+		if (heads.length > 0) {
+			heads[0].appendChild(node);
+		} else {
+			// no head yet, stick it whereever
+			document.documentElement.appendChild(node);
+		}
 	}
 };
 
@@ -189,10 +242,10 @@ var allowRemovePointPersonFromVolunteers = function() {
 	var addAllowClearToPersonSelect = function() {
 		var point_person_select = document.querySelector("#s2id_signup_parent_id");
 		if (point_person_select.classList) {
-		  point_person_select.classList.add("select2-allowclear");
+			point_person_select.classList.add("select2-allowclear");
 		} else {
-		  point_person_select.className += " " + "select2-allowclear";
-		}		
+			point_person_select.className += " " + "select2-allowclear";
+		}
 	};
 	addAllowClearToPersonSelect();
 	var volunteer_checkbox = document.querySelector("#signup_is_volunteer");
@@ -255,6 +308,30 @@ var hideAmericanAndCanadianStatesFromFilter = function() {
 	var observer = new MutationObserver(removeUnwantedStates);
 	observer.observe(document.body, {childList: true, subtree: true});
 
+};
+
+var enlargeEmailPreviewWindows = function() {
+	document.querySelectorAll('.span-12').forEach(function(el){el.className = 'span-24'});
+	document.getElementById('html_mailing_preview').style.height = "600px";
+	document.getElementById('text_mailing_preview').style.height = "600px";
+};
+
+var enlargeContentEditor = function() {
+	var css = [
+		".mceIframeContainer iframe, .mce-container iframe { ",
+		"  min-height: 50vh !important; ",
+		"} "
+	].join("\n");
+	addCssToPage(css);
+};
+
+var enlargeCodeEditor = function() {
+	var css = [
+		".CodeMirror, .CodeMirror-scroll {",
+		"  height: 80vh !important;",
+		"}"
+	].join("\n");
+	addCssToPage(css);
 };
 
 init();
