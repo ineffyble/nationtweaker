@@ -2,15 +2,19 @@ var paths = {
 	"signup": "signups/.*",
 	"signupList": "signups$",
 	"signupEdit": "signups/.*/edit",
+	"page": "sites/.*/pages/.*",
 	"pageDashboard": "sites/.*/pages/.*/activities",
 	"pageNew": "sites/.*/pages/new",
-	"page": "sites/.*/pages/.*"
+	"pageTemplate": "sites/.*/pages/.*/template",
+	"theme": "sites/.*/themes/.*",
+	"mailingPreview": "broadcasters/.*/mailings/.*/preview",
+	"mailingTheme": "broadcasters/.*/mailings/.*/themes/.*/attachments/.*"
 };
 
 var tweaks = [
 	{
 		"name": "Enable email re-opt-in",
-		"description": "Allows you to tick 'receive emails' for people who have opted out", 
+		"description": "Allows you to tick 'receive emails' for people who have opted out",
 		"suggestLink": "http://nationbuilder.com/cramereg/overriding_the_unsubscribe",
 		"function": "enableReOptIn",
 		"matches": [paths.signupEdit],
@@ -40,6 +44,7 @@ var tweaks = [
 		"name": "Hide social capital",
 		"description": "Removes nearly all references to political capital from the admin interface",
 		"function": "hideCapital",
+		"suggestLink": "#",
 		"matches": [".*"]
 	},
 	{
@@ -76,6 +81,27 @@ var tweaks = [
 		"suggestLink": "http://nationbuilder.com/tws_tony/add_country_as_a_settings_option",
 		"function": "hideAmericanAndCanadianStatesFromFilter",
 		"matches": [paths.signupList]
+        },
+        {
+		"name": "Increase size of email preview windows",
+		"description": "Make email previews full width and 600px high",
+		"suggestLink": "#",
+		"function": "enlargeEmailPreviewWindows",
+		"matches": [paths.mailingPreview]
+	},
+	{
+		"name": "Increase size of page and post content editor windows",
+		"description": "No more scrolling for ages just to be able to see your own content in the editor",
+		"suggestLink": "#",
+		"function": "enlargeContentEditor",
+		"matches": [".*"]
+	},
+	{
+		"name": "Increase size of the template/theme code editor",
+		"description": "Enlarges the template editor windows to 80% of window height by default",
+		"suggestLink": "#",
+		"function": "enlargeCodeEditor",
+		"matches": [paths.theme, paths.pageTemplate, paths.mailingTheme]
 	}
 ];
 
@@ -126,15 +152,26 @@ var runTweak = function(t) {
 		case "enableReOptIn": enableReOptIn(); break;
 		case "fixAttendeesLink": fixAttendeesLink(); break;
 		case "fixPageTagLinks": fixPageTagLinks(); break;
-		case "hideCapital": hideCapital(); break;
+		case "hideCapital": runCssTweak("hideCapital"); break;
 		case "allowRemovePointPersonFromVolunteers": allowRemovePointPersonFromVolunteers(); break;
 		case "makePathsOnPersonViewClickable": makePathsOnPersonViewClickable(); break;
 		case "stopNewPagesAddedToNavByDefault": stopNewPagesAddedToNavByDefault(); break;
 		case "sortTags": sortTags(); break;
 		case "stopIncorrectlyPassedPageNumbers": stopIncorrectlyPassedPageNumbers(); break;
 		case "hideAmericanAndCanadianStatesFromFilter": hideAmericanAndCanadianStatesFromFilter(); break;
+		case "enlargeEmailPreviewWindows": enlargeEmailPreviewWindows(); break;
+		case "enlargeContentEditor": runCssTweak("enlargeContentEditor"); break;
+		case "enlargeCodeEditor": runCssTweak("enlargeCodeEditor"); break;
 	}
 };
+
+var runCssTweak = function(name) {
+	var link = document.createElement("link");
+	link.href = chrome.extension.getURL("css/" + name + ".css");
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	document.body.appendChild(link);	
+}
 
 var addSettingsToUserMenu = function() {
 	var user_menu = document.querySelector(".user-menu");
@@ -177,22 +214,14 @@ var sortTags = function() {
 	});
 };
 
-var hideCapital = function() {
-	var link = document.createElement("link");
-	link.href = chrome.extension.getURL("css/hideCapital.css");
-	link.type = "text/css";
-	link.rel = "stylesheet";
-	document.body.appendChild(link);
-};
-
 var allowRemovePointPersonFromVolunteers = function() {
 	var addAllowClearToPersonSelect = function() {
 		var point_person_select = document.querySelector("#s2id_signup_parent_id");
 		if (point_person_select.classList) {
-		  point_person_select.classList.add("select2-allowclear");
+			point_person_select.classList.add("select2-allowclear");
 		} else {
-		  point_person_select.className += " " + "select2-allowclear";
-		}		
+			point_person_select.className += " " + "select2-allowclear";
+		}
 	};
 	addAllowClearToPersonSelect();
 	var volunteer_checkbox = document.querySelector("#signup_is_volunteer");
@@ -255,6 +284,16 @@ var hideAmericanAndCanadianStatesFromFilter = function() {
 	var observer = new MutationObserver(removeUnwantedStates);
 	observer.observe(document.body, {childList: true, subtree: true});
 
+};
+
+var enlargeEmailPreviewWindows = function() {
+	var previews = [].slice.call(document.querySelectorAll('.span-12'));
+	previews.forEach(function(el){
+		el.className = 'span-24'
+	});
+	
+	document.getElementById('html_mailing_preview').style.height = "600px";
+	document.getElementById('text_mailing_preview').style.height = "600px";
 };
 
 init();
