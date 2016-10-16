@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "NationTweaker",
-  "version": "0.1",
+  "version": "0.2",
   "description": "Tweaks, fixes, and enhancements for NationBuilder", 
 
   "permissions": ["storage"],
